@@ -1,34 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"net/http"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/UsamaHussain000111/go-microservices/app"
 )
 
 func main() {
-	//add a chi router
-	router := chi.NewRouter()
-	//use the logging for routes
-	router.Use(middleware.Logger)
+	app := app.New()
 
-	router.Get("/hello", basicHandler)
-	// define the server. here & represents that we storing the value as a pointer by taking the
-	// memory address (reference type) rather than the value (value type)
-	server := &http.Server{
-		// inside here we can define our server properties like
-		Addr:    ":3000", // port
-		Handler: router,
-	}
+	err := app.Start(context.TODO())
 
-	err := server.ListenAndServe()
 	if err != nil {
-		fmt.Println("failed to listen to server", err)
+		fmt.Println("failed to start the app:", err)
 	}
-}
-
-func basicHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello World"))
 }
